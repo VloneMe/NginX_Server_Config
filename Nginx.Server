@@ -1,0 +1,95 @@
+# NginX Server Configuration
+
+### Installation Pre Configurations
+
+# Update the package list
+#($) sudo apt update
+
+# Install Nginx
+#($) sudo apt install -y nginx
+
+# Check the status of Nginx
+#($) sudo service nginx status
+^
+# Make an HTTP request to the local machine
+#($) curl localhost
+
+# List the contents of the "/etc/nginx/sites-available/" directory
+#($) ll /etc/nginx/sites-available/
+^
+# List the contents of the "/etc/nginx/sites-enabled/" directory
+#($) ll /etc/nginx/sites-enabled/
+
+### This Configuration file
+### on ipv6 make port 80 ipv6only=on
+### you can also modify the server name
+### from  server_name _; to server_name francisntima.tech; 
+###  server { 
+        listen [::]:80 default_server ipv6only=on;
+         server_name francisntima.tech;
+    }
+#($) sudo vi /etc/nginx/sites-available/default
+
+### Redirection of different Pages
+### index.html / 404.html 
+^
+#($) ls /var/www/html/
+#($) sudo vi /var/www/html/index.nginx-debian.html
+
+#($) echo "Hello i am Francis D. Ntima" | sudo tee /var/www/html/index.html
+#($) echo "Hello i am Francis D. Ntima" | sudo tee /var/www/html/index.html > /dev/null
+^
+# In summary, both commands write the text "Hello i am Francis D. Ntima" to the 
+# file /var/www/html/index.html using sudo privileges, but the second command also 
+# suppresses the output display on the terminal by redirecting it to /dev/null. 
+# The first command would display the content on the terminal as it writes it to 
+# the file.
+
+#($) ls /var/www/html/
+^
+# Make an HTTP request to the local machine
+#($) curl localhost
+
+#($)    echo "The Page You are Search Doesn't Exist!" | sudo tee /var/www/html/404.html > /dev/null
+{
+    # This command echoes a custom error message to be displayed on a 404 error page.
+# The message informs users that the page they are searching for doesn't exist.
+
+# It uses the "echo" command to output the error message.
+echo "The Page You are Search Doesn't Exist!"
+
+# The "|" (pipe) symbol redirects the output of the "echo" command to the "tee" command.
+
+# The "tee" command writes the echoed message to a file with sudo privileges.
+# In this case, it writes to the "/var/www/html/404.html" file, which is commonly used as a custom 404 error page.
+
+# Finally, "> /dev/null" redirects any additional output to /dev/null, effectively suppressing it from being displayed on the terminal.
+
+}
+
+###  If no changes occured on the client
+###  server { 
+        listen [::]:80 default_server ipv6only=on;
+        server_name francisntima.tech;
+
+        error_page 404 /404.html
+        location = /404.html {
+            # Use internal make sure client cant requet this page on the url
+            # you can also lacate the root to the file
+            # especialy when not on the root directory
+            # but not neccesary when on the root.
+            root /var/www/html/{error OR 404.html} # This way
+            internal;
+        }
+
+        location = /redirect_me {
+            return 301 https://youtube.com/';
+        }
+    }
+#($) sudo vi /etc/nginx/sites-available/default
+
+### Use this to restar the nginx for accepting changes
+#($) sudo nginx -s reload
+### Instead of which will stop service for a time 
+### on a user current working on the machine.
+#($) sudo service nginx restart 
